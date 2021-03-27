@@ -1,18 +1,70 @@
-import React, { Component } from "react";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-class NavBar extends Component {
-  render() {
-    return (
-      <nav className="navbar navbar-light bg-light">
-        <a className="navbar-brand" href="#">
-          NavBar
-          <span className="badge badge-pill badge-secondary m-2">
-            {this.props.totalCounters}
-          </span>
-        </a>
-      </nav>
-    );
-  }
-}
+const NavBar = ({ user }) => {
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container-fluid">
+        <NavLink className="navbar-brand" to="/movies">
+          Vidly
+        </NavLink>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <NavLink className="nav-link" aria-current="page" to="/movies">
+                Movies
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/customers">
+                Customers
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/rentals">
+                Rentals
+              </NavLink>
+            </li>
+            {user && user.isAdmin && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/admin">
+                  Admin
+                </NavLink>
+              </li>
+            )}
+            {!user && (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/login">
+                    Login
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/register">
+                    Register
+                  </NavLink>
+                </li>
+              </>
+            )}
+            {user && (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/profile">
+                    {user.name}
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/logout">
+                    Logout
+                  </NavLink>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
+};
 
 export default NavBar;

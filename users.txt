@@ -1,0 +1,5 @@
+
+user1@domain.com   12345       to login as admin
+user2@domain.com   12345       to login as ordinary user
+user3@domain.com   12345       to login as ordinary user
+user4@domain.com   12345       to login as ordinary user

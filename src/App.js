@@ -1,63 +1,57 @@
 import React, { Component } from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import authService from "./services/authService";
+import Movies from "./components/movies";
+import Customers from "./components/customers";
+import Rentals from "./components/rentals";
+import NotFound from "./components/notFound";
 import NavBar from "./components/navbar";
-import Counters from "./components/counters";
-import "./App.css";
+import Admin from "./components/admin";
+import MovieForm from "./components/movieForm";
+import LoginForm from "./components/loginForm";
+import Logout from "./components/logout";
+import RegisterForm from "./components/registerForm";
+import Profile from "./components/profile";
+import "react-toastify/dist/ReactToastify.css";
 
-class App extends Component {
-  state = {
-    counters: [
-      { id: 1, value: 1 },
-      { id: 2, value: 0 },
-      { id: 3, value: 0 },
-      { id: 4, value: 0 },
-    ],
-  };
-
-  handleIncrement = (counter) => {
-    const counters = [...this.state.counters];
-    const index = counters.indexOf(counter);
-    counters[index] = { ...counter };
-    counters[index].value++;
-    this.setState({ counters });
-  };
-
-  handleDecrement = (counter) => {
-    const counters = [...this.state.counters];
-    const index = counters.indexOf(counter);
-    counters[index] = { ...counter };
-    counters[index].value--;
-    this.setState({ counters });
-  };
-
-  handleReset = () => {
-    const counters = this.state.counters.map((c) => {
-      c.value = 0;
-      return c;
-    });
-    this.setState({ counters });
-  };
-
-  handleDelete = (id) => {
-    const counters = this.state.counters.filter((c) => c.id !== id);
-    this.setState({ counters });
-  };
+export default class App extends Component {
+  state = {};
+  componentDidMount() {
+    const user = authService.getCurrentUser();
+    this.setState({ user });
+  }
 
   render() {
+    const { user } = this.state;
     return (
-      <React.Fragment>
-        <NavBar
-          totalCounters={this.state.counters.filter((c) => c.value > 0).length}
-        ></NavBar>
-        <Counters
-          onIncrement={this.handleIncrement}
-          onDecrement={this.handleDecrement}
-          onReset={this.handleReset}
-          onDelete={this.handleDelete}
-          counters={this.state.counters}
-        ></Counters>
-      </React.Fragment>
+      <>
+        <ToastContainer autoClose={2000} />
+        <NavBar user={user} />
+        <main className="container">
+          <Switch>
+            <Route path="/login" component={LoginForm} />
+            <Route path="/logout" component={Logout} />
+            <Route path="/register" component={RegisterForm} />
+            {/* <Route path="/profile" component={Profile} /> */}
+            <Route path="/profile" render={() => <Profile user={user} />} />
+            <Route
+              path="/movies/:id"
+              render={(props) => {
+                if (!user) return <Redirect to="/login" />;
+                return <MovieForm {...props} />;
+              }}
+            />
+            <Route path="/movies" component={Movies} />
+            <Route path="/customers" component={Customers} />
+            <Route path="/rentals" component={Rentals} />
+            <Route path="/admin" component={Admin} />
+            <Route path="/" exact component={Movies} />
+            <Route pah="/not-found" component={NotFound} />
+            <Redirect to="/not-found" />
+          </Switch>
+        </main>
+      </>
     );
   }
 }
-
-export default App;
